@@ -11,7 +11,7 @@ cohere==4.48
 fastavro==1.9.4
 Flask==3.0.2
 frozenlist==1.4.1
-graphviz==10.0.1
+graphviz==0.20.1
 idna==3.6
 importlib-metadata==6.11.0
 itsdangerous==2.1.2
@@ -24,3 +24,4 @@ urllib3==2.2.1
 Werkzeug==3.0.1
 yarl==1.9.4
 zipp==3.17.0
+python-graphviz
