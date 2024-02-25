@@ -748,6 +748,11 @@ externalDocs:
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    print(request)
+    print(request.files)
+    if len(request.files) == 0:
+        return 'No files uploaded'
+    
     if 'file' not in request.files:
         return 'No file part'
     
