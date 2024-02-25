@@ -1,5 +1,5 @@
 import cohere
-from flask import Flask, send_file
+from flask import Flask, send_file, request
 from graphviz import Digraph
 from PIL import Image
 import os
@@ -745,6 +745,25 @@ externalDocs:
         return_likelihoods='NONE')
     print(response)
     return response.generations[0].text
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return 'No file part'
+    
+    print(request)
+    print(request.files)
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return 'No selected file'
+
+    # Process the file as needed (save, analyze, etc.)
+    # For example, save the file to the server
+    file.save('uploaded_file.txt')
+
+    return 'File successfully uploaded'
 
 @app.route('/test')
 def generate_er_diagram():
