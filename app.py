@@ -776,11 +776,13 @@ def generate_er_diagram():
     print(graph)
     # Save the graph as PNG
     # Get the directory of the script
-    script_directory = os.path.dirname(os.path.realpath(__file__))
-    print(script_directory)
+    # script_directory = os.path.dirname(os.path.realpath(__file__))
+    # print(script_directory)
 
     # Set the file path to the same directory with a relative path
-    graph_file_path = os.path.join(script_directory, 'er_diagram')
+    # graph_file_path = os.path.join(script_directory, 'er_diagram')
+    # print(graph_file_path)
+    graph_file_path = '/tmp/er_diagram'
     print(graph_file_path)
     graph.render(graph_file_path,format='png',cleanup=True)
     # Open the PNG file and convert to response
@@ -789,6 +791,3 @@ def generate_er_diagram():
     response = send_file(graph_file_path +'.png', mimetype='image/png', as_attachment=True, download_name='er_diagram.png')
     print(response)
     return response
-
-if __name__ == '__main__':
-    generate_er_diagram()
