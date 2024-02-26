@@ -770,6 +770,30 @@ def upload_file():
 
     return 'File successfully uploaded'
 
+@app.route('/upload-test', methods=['POST'])
+def upload_file2():
+    print(request)
+    print(request.get_data())
+    if len(request.files) == 0:
+        return 'No files uploaded'
+    
+    if 'file' not in request.files:
+        return 'No file part'
+    
+    print(request)
+    print(request.files)
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return 'No selected file'
+
+    # Process the file as needed (save, analyze, etc.)
+    # For example, save the file to the server
+    file.save('uploaded_file.txt')
+
+    return 'File successfully uploaded'
+
 @app.route('/test')
 def generate_er_diagram():
     # Generate ER diagram using Graphviz
