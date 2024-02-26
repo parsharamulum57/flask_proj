@@ -773,6 +773,9 @@ def upload_file():
 @app.route('/upload-test', methods=['POST'])
 def upload_file2():
     print(request)
+    print(request.data)
+    print(request.form)
+    print(request.json)
     print(request.get_data())
     if len(request.files) == 0:
         return 'No files uploaded'
