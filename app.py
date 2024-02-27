@@ -1,20 +1,13 @@
 import cohere
 from flask import Flask, send_file, request
-from graphviz import Digraph
-from PIL import Image
-import os
+#from graphviz import Digraph
+#from PIL import Image
+#import os
+from openai import OpenAI
 
 
 app = Flask(__name__)
-@app.route('/')
-def hello_world():
-    return 'Hello world!'
-
-@app.route('/swagger', methods=['GET'])
-def analyze_text():
-
-    print('analyze_text')
-    prompt='''generate Entity Relationship Model in the following format :
+prompt='''generate Entity Relationship Model in the following format :
 entities = {
     'entity1': ['id', ....],
      'entity2': ['id', ....],
@@ -734,6 +727,14 @@ externalDocs:
 }
 
 '''
+@app.route('/')
+def hello_world():
+    return 'Hello world!'
+
+@app.route('/swagger', methods=['GET'])
+def generateERResponseFromSwaggerUsingCohere():
+
+    print('analyze_text')
     print('before cohere')
     co = cohere.Client('80OIPP2omIsbrQx5ONqCZCw3Xq2EKT74nxkee70R') # This is your trial API key
     response = co.generate(
@@ -793,7 +794,7 @@ def upload_file2():
 
     return 'File successfully uploaded'
 
-@app.route('/test')
+""""@app.route('/test')
 def generate_er_diagram():
     # Generate ER diagram using Graphviz
 
@@ -837,4 +838,37 @@ def generate_er_diagram():
     print(img)
     response = send_file(graph_file_path +'.png', mimetype='image/png', as_attachment=True, download_name='er_diagram.png')
     print(response)
-    return response
+    return response"""
+
+@app.route('/ER', methods=['POST'])
+def generateERResponseFromSwaggerUsingOpenAI():
+    #print(request.files)
+    #uploaded_file = request.files['file']
+
+    #if uploaded_file:
+        # Read the content of the file as a string
+        #file_content_bytes = uploaded_file.read()
+        #file_content_string = file_content_bytes.decode('utf-8')
+        #print(file_content_string)
+    
+    api_key = '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'  # Replace 'your-api-key' with your actual API key
+    client = OpenAI(api_key=api_key)
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_format={ "type": "json_object" },
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=1,
+        max_tokens=4096,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+        )
+    print(response)
+    print(response.choices[0].message.content)
+
+if __name__ == '__main__':
+    generateERResponseFromSwaggerUsingOpenAI()
