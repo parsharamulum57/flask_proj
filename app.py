@@ -2,7 +2,7 @@ import cohere
 from flask import Flask, send_file, request
 #from graphviz import Digraph
 #from PIL import Image
-#import os
+import os
 from openai import OpenAI
 
 
@@ -842,9 +842,7 @@ def generate_er_diagram():
 
 @app.route('/ER', methods=['POST'])
 def generateERResponseFromSwaggerUsingOpenAI():
-    print(request.files)
     uploaded_file = request.files['file']
-    print(uploaded_file)
 
     if uploaded_file:
         # Read the content of the file as a string
@@ -852,7 +850,7 @@ def generateERResponseFromSwaggerUsingOpenAI():
         file_content_string = file_content_bytes.decode('utf-8')
         print(file_content_string)
     
-    api_key = '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'  # Replace 'your-api-key' with your actual API key
+    api_key = os.environ.get("OPENAI_API_KEY")  # Replace 'your-api-key' with your actual API key
     client = OpenAI(api_key=api_key)
 
     response = client.chat.completions.create(
