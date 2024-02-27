@@ -842,14 +842,15 @@ def generate_er_diagram():
 
 @app.route('/ER', methods=['POST'])
 def generateERResponseFromSwaggerUsingOpenAI():
-    #print(request.files)
-    #uploaded_file = request.files['file']
+    print(request.files)
+    uploaded_file = request.files['file']
+    print(uploaded_file)
 
-    #if uploaded_file:
+    if uploaded_file:
         # Read the content of the file as a string
-        #file_content_bytes = uploaded_file.read()
-        #file_content_string = file_content_bytes.decode('utf-8')
-        #print(file_content_string)
+        file_content_bytes = uploaded_file.read()
+        file_content_string = file_content_bytes.decode('utf-8')
+        print(file_content_string)
     
     api_key = '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'  # Replace 'your-api-key' with your actual API key
     client = OpenAI(api_key=api_key)
@@ -867,8 +868,10 @@ def generateERResponseFromSwaggerUsingOpenAI():
         frequency_penalty=0,
         presence_penalty=0
         )
-    print(response)
+    #print(response)
     print(response.choices[0].message.content)
+    print(type(response.choices[0].message.content))
+    return response.choices[0].message.content
 
 if __name__ == '__main__':
     generateERResponseFromSwaggerUsingOpenAI()
