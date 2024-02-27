@@ -850,6 +850,19 @@ def generateERResponseFromSwaggerUsingOpenAI():
         file_content_string = file_content_bytes.decode('utf-8')
         print(file_content_string)
     
+    prompt = '''generate Entity Relationship Model in the following format :
+entities = {
+    'entity1': ['id', ....],
+     'entity2': ['id', ....],
+}
+relationships = [
+    ('entity1', 'entity2', 'many_to_many'),
+    ('entity2', 'entity1', 'one_to_many')
+]
+where entity1, entity2 are examples names to give you as an example. Please change them accordingly and give the reponse json format. 
+
+from swagger yaml given below:''' + file_content_string
+    
     api_key = os.environ.get("OPENAI_API_KEY")  # Replace 'your-api-key' with your actual API key
     client = OpenAI(api_key=api_key)
 
