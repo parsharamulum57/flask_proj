@@ -1,8 +1,10 @@
 import cohere
-from flask import Flask, send_file, request
+from flask import Flask, send_file, request, jsonify
 #from graphviz import Digraph
 #from PIL import Image
 import os
+import io
+import zipfile
 from openai import OpenAI
 
 
@@ -884,5 +886,44 @@ from swagger yaml given below:''' + file_content_string
     print(type(response.choices[0].message.content))
     return response.choices[0].message.content
 
+
+@app.route('/test-produce-bugs', methods=['GET'])
+def testForProducingBugs():
+    a=[]
+    print(a[1]);
+
+@app.route('/upload-zip', methods=['POST'])
+def upload_zip():
+    # Check if the POST request contains a file
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+
+    zip_file = request.files['file']
+
+    print(zip_file)
+
+    # Check if the file has a name and ends with .zip
+    if zip_file.filename == '' or not zip_file.filename.endswith('.zip'):
+        return jsonify({'error': 'Invalid file format. Please upload a .zip file'}), 400
+
+    try:
+        # Read the zip file contents into memory
+        zip_data = io.BytesIO(zip_file.read())
+
+        # Extract the contents of the zip file
+        with zipfile.ZipFile(zip_data, 'r') as zip_ref:
+            file_contents = {}
+            for file_info in zip_ref.infolist():
+                with zip_ref.open(file_info) as file:
+                    content = file.read().decode('utf-8')
+                    file_contents[file_info.filename] = content
+
+        # Return the file paths and contents in JSON format
+        return jsonify({'file_contents': file_contents})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
-    generateERResponseFromSwaggerUsingOpenAI()
+    testForProducingBugs()
