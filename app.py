@@ -913,13 +913,58 @@ def upload_zip():
         # Extract the contents of the zip file
         with zipfile.ZipFile(zip_data, 'r') as zip_ref:
             file_contents = {}
+            api_key = os.environ.get("OPENAI_API_KEY")  # Replace 'your-api-key' with your actual API key
+            client = OpenAI(api_key=api_key)
+            messages=[{"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+                      {"role": "user", "content": "Please analyze the the java project which I will be sending each file one by one along with the file path"}]
+          
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                response_format={ "type": "json_object" },
+                messages=messages,
+                temperature=1,
+                max_tokens=4096,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+              )
+            print(response.choices[0].message.content)
+            ob={"role": "assistant", "content": response.choices[0].message.content}
+            messages.append(ob);
             for file_info in zip_ref.infolist():
                 with zip_ref.open(file_info) as file:
                     content = file.read().decode('utf-8')
                     file_contents[file_info.filename] = content
-
-        # Return the file paths and contents in JSON format
-        return jsonify({'file_contents': file_contents})
+                    ob={{"role": "user", "content": "analyze the code its file path is "+file_info.filename+ " and its code is "+ content}}
+                    messages.append(ob);
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        response_format={ "type": "json_object" },
+                        messages=messages,
+                        temperature=1,
+                        max_tokens=4096,
+                        top_p=1,
+                        frequency_penalty=0,
+                        presence_penalty=0
+                      )
+                    print(response.choices[0].message.content)
+                    ob={"role": "assistant", "content": response.choices[0].message.content}
+                    messages.append(ob)
+            ob={"role": "user", "content": "please summerize the whole java project by using the code the file paths provided in the previous prompts"}
+            messages.append(ob)
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                response_format={ "type": "json_object" },
+                messages=messages,
+                temperature=1,
+                max_tokens=4096,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+              ) 
+            
+            print(response.choices[0].message.content)
+            return response.choices[0].message.content
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
