@@ -931,13 +931,17 @@ def upload_zip():
             print(response.choices[0].message.content)
             ob={"role": "assistant", "content": response.choices[0].message.content}
             messages.append(ob);
-            print("messages ", messages)
+            #print("messages ", messages)
             for file_info in zip_ref.infolist():
                 with zip_ref.open(file_info) as file:
                     content = file.read().decode('utf-8')
                     file_contents[file_info.filename] = content
+                    print(file_info.filename)
+                    if "/src/" not in file_info.filename:
+                        continue
                     ob={"role": "user", "content": "analyze the code its file path is "+file_info.filename+ " and its code is "+ content}
-                    messages.append(ob);
+                    messages.append(ob)
+                    print("messages ", messages)
                     response = client.chat.completions.create(
                         model="gpt-3.5-turbo",
                         response_format={ "type": "json_object" },
