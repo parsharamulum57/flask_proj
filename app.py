@@ -936,7 +936,7 @@ def upload_zip():
                 with zip_ref.open(file_info) as file:
                     content = file.read().decode('utf-8')
                     file_contents[file_info.filename] = content
-                    ob={{"role": "user", "content": "analyze the code its file path is "+file_info.filename+ " and its code is "+ content}}
+                    ob={"role": "user", "content": "analyze the code its file path is "+file_info.filename+ " and its code is "+ content}
                     messages.append(ob);
                     response = client.chat.completions.create(
                         model="gpt-3.5-turbo",
