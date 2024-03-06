@@ -937,7 +937,7 @@ def upload_zip():
                     content = file.read().decode('utf-8')
                     file_contents[file_info.filename] = content
                     print(file_info.filename)
-                    if "/src/" not in file_info.filename:
+                    if not file_info.filename.endswith(".java"):
                         continue
                     ob={"role": "user", "content": "analyze the code its file path is "+file_info.filename+ " and its code is "+ content}
                     messages.append(ob)
