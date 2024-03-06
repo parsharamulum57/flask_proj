@@ -931,6 +931,7 @@ def upload_zip():
             print(response.choices[0].message.content)
             ob={"role": "assistant", "content": response.choices[0].message.content}
             messages.append(ob);
+            print("messages ", messages)
             for file_info in zip_ref.infolist():
                 with zip_ref.open(file_info) as file:
                     content = file.read().decode('utf-8')
@@ -967,6 +968,7 @@ def upload_zip():
             return response.choices[0].message.content
 
     except Exception as e:
+        print(e)
         return jsonify({'error': str(e)}), 500
 
 
